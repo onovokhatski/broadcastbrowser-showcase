@@ -11,8 +11,24 @@ talk to the host only through a single typed API (`bb`). This repository is a
 public showcase of the architecture and selected code; the full source is
 private.
 
-> Built with Electron + TypeScript. macOS (Apple Silicon) and Windows builds are
-> produced by CI. Builds available on request.
+> **Status: work in progress.** The streaming engine and plugins are functional,
+> but the interface, visual design and UX are still being actively developed.
+> This is an early beta shown to illustrate the architecture and direction — not
+> a finished product, and the UI does not yet reflect its final quality.
+>
+> Built with Electron + TypeScript. Signed macOS (Apple Silicon) and Windows
+> builds are produced by CI — see [Download](#download).
+
+## Download
+
+Early beta builds (version 0.6.3):
+
+- **macOS (Apple Silicon):** [`BroadcastBrowser-0.6.3-arm64.dmg`](https://github.com/onovokhatski/broadcastbrowser-showcase/releases/latest)
+- **Windows:** [`BroadcastBrowser-Setup.exe`](https://github.com/onovokhatski/broadcastbrowser-showcase/releases/latest)
+
+See the [latest release](https://github.com/onovokhatski/broadcastbrowser-showcase/releases/latest)
+for both files and first-launch notes (the macOS build is ad-hoc signed, so the
+first open needs System Settings → Privacy & Security → **Open Anyway**).
 
 ---
 
