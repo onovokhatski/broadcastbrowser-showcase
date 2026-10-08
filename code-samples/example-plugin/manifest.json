@@ -1,0 +1,16 @@
+{
+  "id": "test-pattern",
+  "name": "Test Pattern",
+  "version": "0.7.0",
+  "min_browser": "1.0.0",
+  "entry": "index.js",
+  "permissions": [
+    "ui.page",
+    "ui.panel",
+    "storage",
+    "tabs.read"
+  ],
+  "description": "Test patterns (color bars, geometry grid, frame-lock and bouncing-ball motion) at a preset or custom size",
+  "icon": "TP",
+  "signature": "UlJqq0Ferhj9qt/jGpkGQ0AvUzilvhdEE/tJpTIOuBDfQSgZ1zAZWAUiOvSU6wTeQJ0ByyawvpUwOKbOqw1aAg=="
+}
