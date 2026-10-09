@@ -46,11 +46,17 @@ plugin-runtime   builds the `bb` object, then calls the plugin's entry()
 
 ### Isolation and permissions
 
-Each plugin runs in its own Worker thread. It declares the capabilities it needs
-in its manifest (for example `stream.video`, `stream.audio`, `network.local`,
-`storage`, `ui.panel`, `license`, `tabs.read`). Permission checks happen twice:
-a fast reject inside the runtime, and the authoritative check in the main
-process, so a compromised plugin bundle cannot exceed its grant.
+Each plugin runs in its own Worker thread, which keeps plugin work off the UI and
+main event loop and gives it a clean API boundary. It is isolation, not a security
+sandbox: a Worker has normal Node access, so the trust boundary for *running* code
+is signing (below) — only first-party signed plugins load.
+
+What the capability model constrains is the `bb` surface. A plugin declares the
+capabilities it needs in its manifest (for example `stream.video`, `stream.audio`,
+`network.local`, `storage`, `ui.panel`, `license`, `tabs.read`), and the host
+gates the API to that grant twice: a fast reject inside the runtime and the
+authoritative check in the main process, so a plugin cannot use a host capability
+it did not request.
 
 ### Signing
 

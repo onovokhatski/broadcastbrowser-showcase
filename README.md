@@ -5,9 +5,9 @@ it as a professional **NDI** video source (with alpha channel and audio) into
 tools like OBS, vMix, Resolume and TouchDesigner — over the local network, with
 no capture card.
 
-The browser itself contains **no output logic**. Everything — NDI output, OSC
-control, timers, test patterns — lives in **sandboxed, signed plugins** that
-talk to the host only through a single typed API (`bb`). This repository is a
+The browser itself contains **no tool-specific logic**. NDI output, OSC control,
+timers and test patterns all live in **signed plugins** that run in their own
+worker and reach the host only through a single typed API (`bb`). This repository is a
 public showcase of the architecture and selected code; the full source is
 private.
 
@@ -52,15 +52,22 @@ six plugins below were each built this way.
 
 ## Technical highlights
 
-- **Closed plugin architecture.** The host knows nothing about NDI or OSC. Each
-  plugin runs in its own isolated **Worker thread** and reaches the browser only
-  through the typed `bb` API ([`code-samples/plugin-api-contract.ts`](code-samples/plugin-api-contract.ts)).
-- **Signed plugins.** In production every plugin bundle is verified with an
-  **Ed25519** signature against a public key embedded in the app. Only
-  first-party, signed plugins load.
-- **Capability-based permissions.** A plugin declares what it needs
-  (`stream.video`, `network.local`, `storage`, `ui.panel`, …); the host enforces
-  it — fast-reject in the runtime, authoritatively in the main process.
+- **Generic host, tool logic in plugins.** The host provides primitives — tab
+  capture, a UDP OSC transport, storage, UI surfaces — but no tool-specific
+  behavior. NDI output, timer logic and OSC mappings all live in plugins, which
+  reach the host only through the typed `bb` API
+  ([`plugin-api-contract.ts`](code-samples/plugin-api-contract.ts)). Each plugin
+  runs in its own **Worker thread**, off the UI/main event loop.
+- **Trust by signing, not sandboxing.** A closed, first-party system: the browser
+  loads only plugin bundles carrying a valid **Ed25519** signature from the
+  publisher key embedded in the app
+  ([`plugin-signature.ts`](code-samples/plugin-signature.ts)). The worker is an
+  isolation and API boundary, not a container for arbitrary untrusted code — the
+  trust boundary is the signature.
+- **Capability-scoped API.** A plugin declares the capabilities it needs
+  (`stream.video`, `network.local`, `storage`, `ui.panel`, …); the host gates the
+  `bb` surface to that grant — a fast reject in the runtime and the authoritative
+  check in the main process.
 - **Real-tab capture.** Video frames come from the actual tab's `WebContents`, so
   the stream mirrors exactly what renders — including page transparency for alpha.
 - **OSC integration.** A multi-channel OSC transport in the host lets plugins
@@ -125,7 +132,7 @@ flowchart TD
     end
     subgraph Main["Main process (Electron)"]
         TM["TabManager (WebContentsView per tab)"]
-        SM["StreamManager (capturePage on a timer)"]
+        SM["StreamManager (frame subscription + capturePage fallback)"]
         PR["PluginRegistry (install / enable / verify signature)"]
         PC["PluginController (one host per enabled plugin)"]
         SC["StreamCoordinator (attaches capture on demand)"]
@@ -149,11 +156,12 @@ More detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 A few of the harder problems behind it:
 
-- **60 fps alpha capture, no capture card.** Frames come from the tab's
-  compositor via `beginFrameSubscription` (a frame per paint); a watchdog falls
-  back to `capturePage()` when painting stops (static or backgrounded tab) so the
-  stream never freezes, and the tab keeps rendering off-screen. Physical vs
-  logical frame size is reconciled so downstream tools get the true resolution.
+- **Up to 60 fps alpha capture, no capture card.** Frames come from the tab's
+  compositor via `beginFrameSubscription` (a frame per paint). A watchdog falls
+  back to `capturePage()` when the compositor stops delivering frames (a static or
+  backgrounded tab), so a quiet tab keeps producing frames instead of the output
+  going stale; the tab also keeps rendering off-screen. Physical vs logical frame
+  size is reconciled so downstream tools get the true resolution.
   ([`stream-manager.ts`](code-samples/stream-manager.ts))
 - **A closed, signed plugin system.** Each plugin bundle is verified with an
   Ed25519 signature against an embedded publisher key before it loads, with
