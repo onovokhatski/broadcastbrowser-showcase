@@ -1,23 +1,18 @@
 # BroadcastBrowser
 
-A desktop browser for live video production. It renders any web page and streams
-it as a professional **NDI** video source (with alpha channel and audio) into
-tools like OBS, vMix, Resolume and TouchDesigner — over the local network, with
-no capture card.
+Turn any web page into a broadcast-grade **NDI video source** — exact resolution,
+a real alpha channel and synced audio — sent live over the network into OBS,
+vMix, Resolume or TouchDesigner, with no capture card. Pages are driven over
+**OSC**, so a show-control cue can change what the stream shows in real time.
 
-The browser itself contains **no tool-specific logic**. NDI output, OSC control,
-timers and test patterns all live in **signed plugins** that run in their own
-worker and reach the host only through a single typed API (`bb`). This repository is a
-public showcase of the architecture and selected code; the full source is
-private.
+![A timer graphic driven over OSC, output on a transparent background](docs/screenshots/osc-timer.webp)
 
-> **Status: work in progress.** The streaming engine and plugins are functional,
-> but the interface, visual design and UX are still being actively developed.
-> This is an early beta shown to illustrate the architecture and direction — not
-> a finished product, and the UI does not yet reflect its final quality.
->
-> Built with Electron + TypeScript. Signed macOS (Apple Silicon) and Windows
-> builds are produced by CI — see [Download](#download).
+> *A timer graphic driven over OSC and output with a transparent background —
+> ready to composite over live video. A short screencast (OSC cue → timer
+> updates → the result in OBS/Resolume over video) is coming; this is the closest
+> single frame for now.*
+
+[**Download for macOS / Windows →**](#download) · built with Electron + TypeScript · early beta, full source private (this repo is a showcase).
 
 ## Download
 
@@ -36,8 +31,8 @@ first open needs System Settings → Privacy & Security → **Open Anyway**).
 
 Getting a web page into a video mixer normally means screen-capturing a browser
 window — fixed resolution, no transparency, no clean audio, and whatever else is
-on screen leaks in. BroadcastBrowser turns a tab into a first-class **NDI source**:
-exact resolution, real alpha channel, synced audio, discoverable on the network.
+on screen leaks in. BroadcastBrowser removes that step: the tab itself becomes a
+clean, network-discoverable source, with nothing on screen to leak.
 
 ## Context
 
@@ -80,22 +75,7 @@ six plugins below were each built this way.
 
 > Early beta — UI, visual design and UX are still being actively developed.
 
-### The browser
-
-**New-tab / home page** — search, bookmarks and frequently visited pages.
-
-![New-tab home page](docs/screenshots/home.webp)
-
-**Settings → Appearance** — built-in color themes (Dark, Light, Nord, Monokai).
-
-![Settings — Appearance](docs/screenshots/appearance.webp)
-
-**Settings → Plugins** — the signed first-party plugins, installed and toggled
-independently of the browser.
-
-![Settings — Plugins](docs/screenshots/plugins.webp)
-
-### Plugins
+### Output & show control
 
 **Test Pattern** — a 4K (3840×2160) alignment chart with a bouncing-ball motion
 test, frame counter and a live performance overlay (render FPS, draw time,
@@ -122,6 +102,21 @@ faders (input values), with learn/pick and saved presets.
 (service-account identifier redacted).
 
 ![Sheets to OSC plugin](docs/screenshots/sheets-osc.png)
+
+### The browser — the platform underneath
+
+**New-tab / home page** — search, bookmarks and frequently visited pages.
+
+![New-tab home page](docs/screenshots/home.webp)
+
+**Settings → Appearance** — built-in color themes (Dark, Light, Nord, Monokai).
+
+![Settings — Appearance](docs/screenshots/appearance.webp)
+
+**Settings → Plugins** — the signed first-party plugins, installed and toggled
+independently of the browser.
+
+![Settings — Plugins](docs/screenshots/plugins.webp)
 
 ## Architecture at a glance
 
