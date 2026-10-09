@@ -8,9 +8,7 @@ vMix, Resolume or TouchDesigner, with no capture card. Pages are driven over
 ![A timer graphic driven over OSC, output on a transparent background](docs/screenshots/osc-timer.webp)
 
 > *A timer graphic driven over OSC and output with a transparent background —
-> ready to composite over live video. A short screencast (OSC cue → timer
-> updates → the result in OBS/Resolume over video) is coming; this is the closest
-> single frame for now.*
+> ready to composite over live video in OBS, Resolume or TouchDesigner.*
 
 [**Download for macOS / Windows →**](#download) · built with Electron + TypeScript · early beta, full source private (this repo is a showcase).
 
