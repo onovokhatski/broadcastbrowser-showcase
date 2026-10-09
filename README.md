@@ -39,6 +39,17 @@ window — fixed resolution, no transparency, no clean audio, and whatever else 
 on screen leaks in. BroadcastBrowser turns a tab into a first-class **NDI source**:
 exact resolution, real alpha channel, synced audio, discoverable on the network.
 
+## Context
+
+A solo project, designed and built end to end — from the plugin architecture and
+the native NDI path to cross-platform CI and signing. It started as a tool for my
+own live-production work (driving shows with Resolume, TouchDesigner and QLab),
+so every plugin comes from a concrete, recurring need rather than a feature list.
+
+The point of the closed-plugin design is adaptability: a new requirement becomes a
+small signed plugin against the stable `bb` API, not a fork of the browser. The
+six plugins below were each built this way.
+
 ## Technical highlights
 
 - **Closed plugin architecture.** The host knows nothing about NDI or OSC. Each
@@ -130,6 +141,32 @@ flowchart TD
 
 More detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
+## Engineering highlights
+
+A few of the harder problems behind it:
+
+- **60 fps alpha capture, no capture card.** Frames come from the tab's
+  compositor via `beginFrameSubscription` (a frame per paint); a watchdog falls
+  back to `capturePage()` when painting stops (static or backgrounded tab) so the
+  stream never freezes, and the tab keeps rendering off-screen. Physical vs
+  logical frame size is reconciled so downstream tools get the true resolution.
+  ([`stream-manager.ts`](code-samples/stream-manager.ts))
+- **A closed, signed plugin system.** Each plugin bundle is verified with an
+  Ed25519 signature against an embedded publisher key before it loads, with
+  capability permissions enforced in both the worker and the main process.
+  ([`plugin-signature.ts`](code-samples/plugin-signature.ts))
+- **Multi-channel OSC.** One plugin can own several UDP endpoints at once, keyed
+  by `(plugin, channel)` — e.g. a timer plugin running many independent timers,
+  each on its own port, bidirectionally. ([`osc-transport.ts`](code-samples/osc-transport.ts))
+- **Cross-platform native builds in CI.** The NDI native addon is rebuilt for
+  macOS (Apple Silicon) and Windows on GitHub Actions. On the newest Windows
+  runner image node-gyp couldn't detect Visual Studio; pinning the toolchain
+  image fixed the build without vendoring the NDI SDK by hand.
+- **Rendering in old embedded Chromium.** A timer skin used container-query units
+  that TouchDesigner's older CEF renderer doesn't support, collapsing the layout;
+  replacing them with a JS-computed sizing unit made overlays render identically
+  in-app and inside the host.
+
 ## Plugin ecosystem
 
 All plugins are first-party and signed. Users install them separately, so the
@@ -155,13 +192,21 @@ browser stays a thin, generic host.
 
 ## Code samples
 
-This repo includes representative source, copied verbatim from the private
-project, to show code style and the plugin model:
+Representative source, copied verbatim from the private project, to show code
+style and the problems it solves (see [`code-samples/`](code-samples/)):
 
-- [`code-samples/plugin-api-contract.ts`](code-samples/plugin-api-contract.ts) —
-  the complete typed `bb` API surface a plugin sees.
-- [`code-samples/example-plugin/`](code-samples/example-plugin/) — the full
-  Test Pattern plugin (≈85 lines) and its manifest.
+- [`plugin-api-contract.ts`](code-samples/plugin-api-contract.ts) — the complete
+  typed `bb` API surface a plugin sees.
+- [`plugin-signature.ts`](code-samples/plugin-signature.ts) — Ed25519 plugin
+  signing/verification, a pure `node:crypto` module.
+- [`osc-transport.ts`](code-samples/osc-transport.ts) — the multi-channel UDP OSC
+  transport (one plugin, many ports).
+- [`stream-manager.ts`](code-samples/stream-manager.ts) — the real-time capture
+  loop (frame subscription with a `capturePage` fallback).
+- [`example-plugin/`](code-samples/example-plugin/) — the full Test Pattern
+  plugin (≈85 lines) and its manifest.
+
+Full source is available for review on request.
 
 ## License
 
