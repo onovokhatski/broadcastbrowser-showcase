@@ -73,41 +73,45 @@ six plugins below were each built this way.
 
 > Early beta — UI, visual design and UX are still being actively developed.
 
+### The browser
+
 **New-tab / home page** — search, bookmarks and frequently visited pages.
 
 ![New-tab home page](docs/screenshots/home.webp)
 
-**Test Pattern plugin** — a 4K (3840×2160) alignment chart with a bouncing-ball
-motion test, frame counter and a live performance overlay (render FPS, draw time,
-dropped frames).
+**Settings → Appearance** — built-in color themes (Dark, Light, Nord, Monokai).
 
-![Test Pattern plugin](docs/screenshots/test-pattern.webp)
-
-**OSC Timer plugin** — a stage/broadcast timer with a dial skin on a transparent
-background (the checkerboard is the alpha channel), running several independent
-timers, each on its own OSC port.
-
-![OSC Timer plugin](docs/screenshots/osc-timer.webp)
+![Settings — Appearance](docs/screenshots/appearance.webp)
 
 **Settings → Plugins** — the signed first-party plugins, installed and toggled
 independently of the browser.
 
 ![Settings — Plugins](docs/screenshots/plugins.webp)
 
-**Settings → Appearance** — built-in color themes (Dark, Light, Nord, Monokai).
+### Plugins
 
-![Settings — Appearance](docs/screenshots/appearance.webp)
+**Test Pattern** — a 4K (3840×2160) alignment chart with a bouncing-ball motion
+test, frame counter and a live performance overlay (render FPS, draw time,
+dropped frames).
 
-**Voice Indicator plugin** — an audio-level meter driven by the active tab's sound.
+![Test Pattern plugin](docs/screenshots/test-pattern.webp)
+
+**OSC Timer** — a stage/broadcast timer with a dial skin on a transparent
+background (the checkerboard is the alpha channel), running several independent
+timers, each on its own OSC port.
+
+![OSC Timer plugin](docs/screenshots/osc-timer.webp)
+
+**Voice Indicator** — an audio-level meter driven by the active tab's sound.
 
 ![Voice Indicator plugin](docs/screenshots/voice-indicator.webp)
 
-**OSC Control plugin** — maps incoming OSC to page elements: triggers (clicks) and
+**OSC Control** — maps incoming OSC to page elements: triggers (clicks) and
 faders (input values), with learn/pick and saved presets.
 
 ![OSC Control plugin](docs/screenshots/osc-control.webp)
 
-**Sheets to OSC plugin** — rules mapping Google Sheet cells to OSC addresses
+**Sheets to OSC** — rules mapping Google Sheet cells to OSC addresses
 (service-account identifier redacted).
 
 ![Sheets to OSC plugin](docs/screenshots/sheets-osc.png)
