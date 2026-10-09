@@ -58,6 +58,45 @@ exact resolution, real alpha channel, synced audio, discoverable on the network.
 - **Cross-platform delivery.** GitHub Actions builds signed macOS (DMG) and
   Windows (Squirrel installer with auto-update) artifacts from one tagged commit.
 
+## Screenshots
+
+> Early beta — UI, visual design and UX are still being actively developed.
+
+**Test Pattern plugin** — a 4K (3840×2160) alignment chart with a bouncing-ball
+motion test, frame counter and a live performance overlay (render FPS, draw time,
+dropped frames).
+
+![Test Pattern plugin](docs/screenshots/test-pattern.webp)
+
+**OSC Timer plugin** — a stage/broadcast timer with a dial skin on a transparent
+background (the checkerboard is the alpha channel), running several independent
+timers, each on its own OSC port.
+
+![OSC Timer plugin](docs/screenshots/osc-timer.webp)
+
+**Settings → Plugins** — the signed first-party plugins, installed and toggled
+independently of the browser.
+
+![Settings — Plugins](docs/screenshots/plugins.webp)
+
+**Settings → Appearance** — built-in color themes (Dark, Light, Nord, Monokai).
+
+![Settings — Appearance](docs/screenshots/appearance.webp)
+
+**Voice Indicator plugin** — an audio-level meter driven by the active tab's sound.
+
+![Voice Indicator plugin](docs/screenshots/voice-indicator.webp)
+
+**OSC Control plugin** — maps incoming OSC to page elements: triggers (clicks) and
+faders (input values), with learn/pick and saved presets.
+
+![OSC Control plugin](docs/screenshots/osc-control.webp)
+
+**Sheets to OSC plugin** — rules mapping Google Sheet cells to OSC addresses
+(service-account identifier redacted).
+
+![Sheets to OSC plugin](docs/screenshots/sheets-osc.png)
+
 ## Architecture at a glance
 
 ```mermaid
