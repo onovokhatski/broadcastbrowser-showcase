@@ -1,9 +1,10 @@
 # Architecture
 
-BroadcastBrowser is an Electron browser whose only job is to render web pages and
-hand them to plugins. It contains no NDI/OSC/output code itself — that lives in
-plugins that communicate through one typed API. This document describes how the
-pieces fit together.
+BroadcastBrowser is an Electron browser whose job is to render web pages and
+expose them to plugins through one typed API. The host provides generic primitives
+— tab capture, a UDP OSC transport, storage and UI surfaces — but no tool-specific
+logic: NDI output, timer behavior and OSC mappings all live in plugins. This
+document describes how the pieces fit together.
 
 ## Three processes
 
@@ -40,9 +41,13 @@ plugin-runtime   builds the `bb` object, then calls the plugin's entry()
 - **StreamCoordinator** attaches video + audio capture to an already-running
   host on demand. It does not own the host — start/stop streaming never restarts
   the plugin.
-- **StreamManager** captures frames from a real tab's `WebContents` via
-  `capturePage()` on a timer. There is no separate offscreen window for the
-  mirror path; the stream is exactly what the tab renders.
+- **StreamManager** captures frames from a real tab's `WebContents`. The primary
+  path is `beginFrameSubscription` — a frame per compositor paint, which reaches
+  high frame rates (up to ~60 fps). A watchdog falls back to `capturePage()` when
+  the compositor stops delivering frames (a static or backgrounded tab), so a
+  quiet tab keeps producing frames instead of the output going stale. There is no
+  separate offscreen window for this mirror path; the stream is exactly what the
+  tab renders.
 
 ### Isolation and permissions
 
