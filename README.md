@@ -62,6 +62,10 @@ exact resolution, real alpha channel, synced audio, discoverable on the network.
 
 > Early beta — UI, visual design and UX are still being actively developed.
 
+**New-tab / home page** — search, bookmarks and frequently visited pages.
+
+![New-tab home page](docs/screenshots/home.webp)
+
 **Test Pattern plugin** — a 4K (3840×2160) alignment chart with a bouncing-ball
 motion test, frame counter and a live performance overlay (render FPS, draw time,
 dropped frames).
